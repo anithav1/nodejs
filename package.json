@@ -1,5 +1,5 @@
 {
-  "name": "dbconnect",
+  "name": "NODEJS",
   "version": "1.0.0",
   "description": "Simple Web app",
   "main": "src/app.js",
