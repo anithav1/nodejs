@@ -6,7 +6,7 @@
 
   "description": "Simple web page",
 
-  "main": "src/app.js",
+  "main": "index.js",
 
   "scripts": {
 
