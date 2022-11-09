@@ -5,6 +5,7 @@ const hbs = require("hbs");
 const jwt = require("jsonwebtoken");
 const e = require('express');
 const bcrypt = require('bcryptjs');
+const chart = require("@mongodb-js/charts-embed-dom")
 
  
 require("./db/conn");
@@ -35,68 +36,111 @@ app.get("/",(req,res)=>{
 app.get("/login.hbs",(req,res)=>{
     res.render("login.hbs")
 });
-
-app.post("/",async(req,res)=>{
+app.post("/", async (req, res) =>{
     try {
-        const password = req.body.password;
-        const cpassword= req.body.cpassword;
-        if (password === cpassword) {
-            
-            const registerEmployee = new Register({
-                name:req.body.name,
-                username:req.body.username,
+
+      const password = req.body.password;
+      const cpassword = req.body.confirmpassword;
+
+      if(password === cpassword){
+        
+        const registerEmployee = new Register({
+                firstname: req.body.firstname,
+                lastname:req.body.lastname,
                 email:req.body.email,
-                phonenumber:req.body.phonenumber,
+                gender:req.body.gender,
+                phone:req.body.phone,
+                age:req.body.age,
                 password:req.body.password,
-                cpassword:req.body.cpassword,
-                gender:req.body.gender
+                confirmpassword:req.body.confirmpassword, 
+        })
 
-            })
+        console.log("the success part" + registerEmployee);
 
-            console.log("the success part" + registerEmployee);
-            const token = await registerEmployee.generateAuthToken();
-            console.log("the token part" + token);
-            const registered = await registerEmployee.save();
-            console.log("the page part" + registered);
-            res.status(201).render("register");
-          }else{
+        const token = await registerEmployee.generateAuthToken();
+        console.log("the token part" + token);
+
+        const registered = await registerEmployee.save();
+        console.log("the page part" + registered);
+
+        res.status(201).render("index");
+
+      }else{
+          res.send("password are not matching")
+      }
+        
+    } catch (error) {
+        res.status(400).send(error);
+        console.log("the error part page ");
+    }
+})
+app.post("/login.hbs", async (req, res) =>{
+    try {
+
+      const password = req.body.password;
+      const cpassword = req.body.confirmpassword;
+
+      if(password === cpassword){
+        
+        const registerHirer = new Hirer({
+                firstname: req.body.firstname,
+                lastname:req.body.lastname,
+                email:req.body.email,
+                gender:req.body.gender,
+                phone:req.body.phone,
+                age:req.body.age,
+                password:req.body.password,
+                confirmpassword:req.body.confirmpassword,    
+        })
+
+        console.log("the success part" + registerHirer);
+
+        const token = await registerHirer.generateAuthToken();
+        console.log("the token part" + token);
+
+        const registered = await registerHirer.save();
+        console.log("the page part" + registered);
+
+        res.status(201).render("index");
+
+      }else{
+          res.send("password are not matching")
+      }
+        
+    } catch (error) {
+        res.status(400).send(error);
+        console.log("the error part page ");
+    }
+})
+
+// login check
+
+app.post("/login.hbs", async(req, res) =>{
+   try {
     
-              res.send("password are not matching")
-          }
-        } catch (error) {
-    
-            res.status(400).send(error);
-    
-            console.log("the error part page ");
+        const email = req.body.email;
+        const password = req.body.password;
+
+        const useremail = await Register.findOne({email:email});
+
+        const isMatch = await bcrypt.compare(password, useremail.password);
+
+        const token = await useremail.generateAuthToken();
+        console.log("the token part" + token);
+       
+        if(isMatch){
+            res.status(201).render("dashboard.hbs");
+        }else{
+           res.send("invalid Password Details"); 
         }
-    })
-
-app.post('/login.hbs',async(req,res)=>{
-try{
-const email=req.body.email;
-const password=req.body.password;
-    const useremail = await Register.findOne({email:email});
     
-    const isMatch = await bcrypt.compare(password, useremail.password);
-
-const token=await useremail.generateAuthToken();
-console.log("The token part "+token);
-
-if(isMatch){
-        res.status(201).render("dashboard.hbs");
-    }
-    else{
-        res.send("Invalid login detail");
-    }
-
-
-}catch(error){
-res.status(400).send("Invalid");
-console.log(error);
-}
+   } catch (error) {
+       res.status(400).send("invalid login Details")
+   }
 })
 
 
-app.listen(port,()=>{
+
+app.listen(port, () => {
     console.log(`server is running at port no ${port}`);
 })
