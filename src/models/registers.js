@@ -41,32 +41,43 @@ const employeeSchema = new mongoose.Schema({
     }]
 })
 
+
 employeeSchema.methods.generateAuthToken = async function(){
-   try {
-       console.log(this._id);
-       const token = jwt.sign({_id:this._id.toString()}, "mynameisanithavfrombangaloreworkingincentelon");
-       this.tokens = this.tokens.concat({token:token})
-       await this.save();
-       return token;
-   } catch (error) {
-       res.send("the error part" + error);
-       console.log("the error part" + error);
-   }
-}
 
-// converting password into hash 
-employeeSchema.pre("save", async function(next) {
-
-    if(this.isModified("password")){
-        this.password = await bcrypt.hash(this.password, 10);
-        this.confirmpassword = await bcrypt.hash(this.password, 10);
-    }
- 
-    next();
-} )
-
-
-
-const Register = new mongoose.model("Register", employeeSchema);
-module.exports = Register;
-
+    try {
+ 
+        console.log(this._id);
+ 
+        const token = jwt.sign({_id:this._id.toString()}, "mynameisanithavfromhassanworkingincentelon");
+ 
+        this.tokens = this.tokens.concat({token:token})
+ 
+        await this.save();
+ 
+        return token;
+ 
+    } catch (error) {
+ 
+        res.send("the error part" + error);
+ 
+        console.log("the error part" + error);
+ 
+    }
+ }
+ // converting password into hash
+ 
+ employeeSchema.pre("save", async function(next) {
+ 
+     if(this.isModified("password")){
+ 
+         this.password = await bcrypt.hash(this.password, 10);
+ 
+         this.confirmpassword = await bcrypt.hash(this.password, 10);
+ 
+     }
+ 
+     next();
+ } )
+ // now we need to create a collections
+ const Register = new mongoose.model("Register", employeeSchema);
+ module.exports = Register;

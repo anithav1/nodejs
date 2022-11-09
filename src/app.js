@@ -5,7 +5,6 @@ const hbs = require("hbs");
 const jwt = require("jsonwebtoken");
 const e = require('express');
 const bcrypt = require('bcryptjs');
-const chart = require("@mongodb-js/charts-embed-dom")
 
  
 require("./db/conn");
@@ -33,114 +32,71 @@ hbs.registerPartials(partials_path)
 app.get("/",(req,res)=>{
     res.render("index")
 });
-app.get("/login.hbs",(req,res)=>{
-    res.render("login.hbs")
+app.get("/login",(req,res)=>{
+    res.render("login")
 });
-app.post("/", async (req, res) =>{
+
+app.post("/",async(req,res)=>{
     try {
-
-      const password = req.body.password;
-      const cpassword = req.body.confirmpassword;
-
-      if(password === cpassword){
-        
-        const registerEmployee = new Register({
-                firstname: req.body.firstname,
-                lastname:req.body.lastname,
-                email:req.body.email,
-                gender:req.body.gender,
-                phone:req.body.phone,
-                age:req.body.age,
-                password:req.body.password,
-                confirmpassword:req.body.confirmpassword, 
-        })
-
-        console.log("the success part" + registerEmployee);
-
-        const token = await registerEmployee.generateAuthToken();
-        console.log("the token part" + token);
-
-        const registered = await registerEmployee.save();
-        console.log("the page part" + registered);
-
-        res.status(201).render("index");
-
-      }else{
-          res.send("password are not matching")
-      }
-        
-    } catch (error) {
-        res.status(400).send(error);
-        console.log("the error part page ");
-    }
-})
-app.post("/login.hbs", async (req, res) =>{
-    try {
-
-      const password = req.body.password;
-      const cpassword = req.body.confirmpassword;
-
-      if(password === cpassword){
-        
-        const registerHirer = new Hirer({
-                firstname: req.body.firstname,
-                lastname:req.body.lastname,
-                email:req.body.email,
-                gender:req.body.gender,
-                phone:req.body.phone,
-                age:req.body.age,
-                password:req.body.password,
-                confirmpassword:req.body.confirmpassword,    
-        })
-
-        console.log("the success part" + registerHirer);
-
-        const token = await registerHirer.generateAuthToken();
-        console.log("the token part" + token);
-
-        const registered = await registerHirer.save();
-        console.log("the page part" + registered);
-
-        res.status(201).render("index");
-
-      }else{
-          res.send("password are not matching")
-      }
-        
-    } catch (error) {
-        res.status(400).send(error);
-        console.log("the error part page ");
-    }
-})
-
-// login check
-
-app.post("/login.hbs", async(req, res) =>{
-   try {
-    
-        const email = req.body.email;
         const password = req.body.password;
+        const cpassword= req.body.cpassword;
+        if (password === cpassword) {
+            
+            const registerEmployee = new Register({
+                name:req.body.name,
+                username:req.body.username,
+                email:req.body.email,
+                phonenumber:req.body.phonenumber,
+                password:req.body.password,
+                cpassword:req.body.cpassword,
+                gender:req.body.gender
 
-        const useremail = await Register.findOne({email:email});
+            })
 
-        const isMatch = await bcrypt.compare(password, useremail.password);
-
-        const token = await useremail.generateAuthToken();
-        console.log("the token part" + token);
-       
-        if(isMatch){
-            res.status(201).render("dashboard.hbs");
-        }else{
-           res.send("invalid Password Details"); 
-        }
+            console.log("the success part" + registerEmployee);
+            const token = await registerEmployee.generateAuthToken();
+            console.log("the token part" + token);
+            const registered = await registerEmployee.save();
+            console.log("the page part" + registered);
+            res.status(201).render("register");
+          }else{
     
-   } catch (error) {
-       res.status(400).send("invalid login Details")
-   }
+              res.send("password are not matching")
+          }
+        } catch (error) {
+    
+            res.status(400).send(error);
+    
+            console.log("the error part page ");
+        }
+    })
+
+app.post('/login',async(req,res)=>{
+try{
+const email=req.body.email;
+const password=req.body.password;
+    const useremail = await Register.findOne({email:email});
+    
+    const isMatch = await bcrypt.compare(password, useremail.password);
+
+const token=await useremail.generateAuthToken();
+console.log("The token part "+token);
+
+if(isMatch){
+        res.status(201).render("dashboard");
+    }
+    else{
+        res.send("Invalid login detail");
+    }
+
+
+}catch(error){
+res.status(400).send("Invalid");
+console.log(error);
+}
 })
 
 
-
-app.listen(port, () => {
+app.listen(port,()=>{
     console.log(`server is running at port no ${port}`);
 })
