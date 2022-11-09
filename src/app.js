@@ -5,7 +5,6 @@ const app = express();
 app.use(cors());
 const hbs = require("hbs");
 
-
  
 require("./db/conn");
 const Register = require("./models/registers");
@@ -80,7 +79,7 @@ const token=await useremail.generateAuthToken();
 console.log("The token part "+token);
 
 if(isMatch){
-        res.status(201).render("register");
+        res.status(201).render("Dashboard");
     }
     else{
         res.send("Invalid login detail");
