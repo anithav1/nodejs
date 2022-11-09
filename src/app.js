@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 const hbs = require("hbs");
-
+const chart = require("@mongodb-js/charts-embed-dom");
  
 require("./db/conn");
 const Register = require("./models/registers");
@@ -79,7 +79,7 @@ const token=await useremail.generateAuthToken();
 console.log("The token part "+token);
 
 if(isMatch){
-        res.status(201).render("Dashboard.hbs");
+        res.status(201).render("Dashboard");
     }
     else{
         res.send("Invalid login detail");
