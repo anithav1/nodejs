@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const e = require('express');
 const bcrypt = require('bcryptjs');
 
-
  
 require("./db/conn");
 const Register = require("./models/registers");
@@ -84,7 +83,7 @@ const token=await useremail.generateAuthToken();
 console.log("The token part "+token);
 
 if(isMatch){
-        res.status(201).render("dashboard");
+        res.status(201).render("dashboard.hbs");
     }
     else{
         res.send("Invalid login detail");
