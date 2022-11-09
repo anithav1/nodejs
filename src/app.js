@@ -33,8 +33,8 @@ hbs.registerPartials(partials_path)
 app.get("/",(req,res)=>{
     res.render("index")
 });
-app.get("/login",(req,res)=>{
-    res.render("login")
+app.get("/login.hbs",(req,res)=>{
+    res.render("login.hbs")
 });
 
 app.post("/",async(req,res)=>{
