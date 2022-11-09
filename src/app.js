@@ -83,7 +83,7 @@ const token=await useremail.generateAuthToken();
 console.log("The token part "+token);
 
 if(isMatch){
-        res.status(201).render("views/dashboard.hbs");
+        res.status(201).render("chart");
     }
     else{
         res.send("Invalid login detail");
