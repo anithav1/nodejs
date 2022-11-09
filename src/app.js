@@ -72,7 +72,7 @@ app.post("/",async(req,res)=>{
         }
     })
 
-app.post('/login',async(req,res)=>{
+app.post('/login.hbs',async(req,res)=>{
 try{
 const email=req.body.email;
 const password=req.body.password;
